@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dolomites & Croatia Playbook</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --cream: #F5F0E8;
+    --dark: #1A1A2E;
+    --dolomite: #6B4E2A;
+    --sea: #1A5F7A;
+    --gold: #C9A84C;
+    --rust: #A0522D;
+    --mist: #8BA7A0;
+    --hard-red: #C0392B;
+    --mod-blue: #2471A3;
+    --easy-purple: #6C3483;
+  }
+  body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(--dark); }
+
+  /* HEADER */
+  .header { background: var(--dark); padding: 32px 40px 60px; position: relative; overflow: hidden; }
+  .header::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 48px;
+    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 1200 48' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 48 L0 24 L80 4 L160 28 L260 6 L360 32 L460 8 L540 30 L640 5 L740 28 L840 4 L940 30 L1040 7 L1140 32 L1200 10 L1200 48 Z' fill='%23F5F0E8'/%3E%3C/svg%3E") no-repeat bottom; background-size: cover;
+  }
+  .header-inner { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; }
+  .trip-title { font-family: 'Playfair Display', serif; font-size: 40px; font-weight: 900; color: var(--cream); line-height: 1.1; }
+  .trip-sub { font-size: 11px; color: var(--mist); letter-spacing: 2px; text-transform: uppercase; margin-top: 8px; }
+  .badges { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
+  .badge { padding: 8px 16px; border-radius: 6px; font-size: 11px; font-weight: 700; line-height: 1.6; text-align: center; }
+  .badge-dolomite { background: var(--dolomite); color: #F5F0E8; }
+  .badge-sea { background: var(--sea); color: #E8F4F8; }
+
+  /* TABS */
+  .tabs { display: flex; padding: 0 40px; border-bottom: 2px solid #ddd; background: white; position: sticky; top: 0; z-index: 10; overflow-x: auto; }
+  .tab { padding: 14px 24px; cursor: pointer; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; border-bottom: 3px solid transparent; margin-bottom: -2px; color: #999; transition: all 0.2s; white-space: nowrap; }
+  .tab.dolomite.active { color: var(--dolomite); border-bottom-color: var(--dolomite); }
+  .tab.croatia.active { color: var(--sea); border-bottom-color: var(--sea); }
+  .tab.dubrovnik.active { color: #8B1A6E; border-bottom-color: #8B1A6E; }
+  .tab:hover:not(.active) { color: var(--dark); }
+
+  /* CONTENT */
+  .content { padding: 36px 40px; max-width: 920px; }
+  .city-label { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--mist); margin-bottom: 4px; }
+  .city-title { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 700; margin-bottom: 4px; }
+  .city-dates { font-size: 13px; font-weight: 500; margin-bottom: 8px; }
+  .city-dates.dolomite { color: var(--dolomite); }
+  .city-dates.croatia { color: var(--sea); }
+  .city-dates.dubrovnik { color: #8B1A6E; }
+  .city-intro { font-size: 13px; color: #555; line-height: 1.7; margin-bottom: 28px; background: white; border-radius: 10px; padding: 16px 20px; border-left: 4px solid var(--gold); }
+
+  /* DAY CARDS */
+  .day-card { background: white; border-radius: 14px; margin-bottom: 18px; overflow: hidden; box-shadow: 0 2px 16px rgba(0,0,0,0.07); border: 1px solid rgba(0,0,0,0.05); }
+  .day-header { display: flex; align-items: stretch; cursor: pointer; }
+  .day-num { color: white; width: 76px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 16px 0; flex-shrink: 0; }
+  .day-num.dolomite { background: var(--dolomite); }
+  .day-num.croatia { background: var(--sea); }
+  .day-num.dubrovnik { background: #8B1A6E; }
+  .day-num.warning { background: var(--hard-red); }
+  .day-num .dow { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; opacity: 0.65; }
+  .day-num .date { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; line-height: 1; }
+  .day-num .month { font-size: 9px; letter-spacing: 1px; text-transform: uppercase; opacity: 0.65; margin-top: 2px; }
+  .day-meta { padding: 16px 20px; flex: 1; }
+  .day-name { font-family: 'Playfair Display', serif; font-size: 19px; font-weight: 700; }
+  .day-theme { font-size: 12px; color: #888; margin-top: 3px; }
+  .day-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+  .tag { font-size: 10px; padding: 3px 10px; border-radius: 20px; font-weight: 600; }
+  .tag-hike { background: #EDF4E8; color: #2D6B1A; }
+  .tag-hard { background: #FDE8E8; color: #8B1A1A; }
+  .tag-moderate { background: #E8F0FD; color: #1A3A8B; }
+  .tag-easy { background: #F0EDF8; color: #5B4A8B; }
+  .tag-sail { background: #E8F4F8; color: #1A5F7A; }
+  .tag-food { background: #FDF4E3; color: #8B6914; }
+  .tag-culture { background: #F4EDE8; color: #8B4513; }
+  .tag-fitness { background: #E8F4F0; color: #2D7A5F; }
+  .tag-warning { background: #FDEDED; color: var(--hard-red); font-weight: 700; }
+  .chevron { padding: 16px 20px; font-size: 18px; color: var(--mist); display: flex; align-items: center; transition: transform 0.3s; }
+  .chevron.open { transform: rotate(180deg); }
+
+  /* BODY */
+  .day-body { display: none; border-top: 1px solid #f0f0f0; padding: 24px; }
+  .day-body.open { display: block; }
+  .section { margin-bottom: 22px; }
+  .section:last-child { margin-bottom: 0; }
+  .sec-title { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; color: var(--mist); margin-bottom: 12px; padding-bottom: 6px; border-bottom: 1px solid #f0f0f0; }
+
+  /* TIMELINE */
+  .timeline { display: flex; flex-direction: column; gap: 12px; }
+  .tl-item { display: flex; gap: 12px; align-items: flex-start; }
+  .tl-time { font-size: 11px; font-weight: 700; color: var(--gold); min-width: 58px; padding-top: 2px; flex-shrink: 0; }
+  .tl-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+  .tl-dot.dolomite { background: var(--dolomite); }
+  .tl-dot.croatia { background: var(--sea); }
+  .tl-dot.dubrovnik { background: #8B1A6E; }
+  .tl-text { font-size: 14px; line-height: 1.55; color: #333; }
+  .tl-text strong { color: var(--dark); }
+
+  /* BLOCKS */
+  .block { border-radius: 10px; padding: 14px 18px; margin-bottom: 0; }
+  .fitness-block { background: linear-gradient(135deg, #EDF4E8, #E8F4F0); border-left: 3px solid #2D6B1A; }
+  .nut-block { background: linear-gradient(135deg, #FDF4E3, #FDF8F0); border-left: 3px solid var(--gold); }
+  .food-block { background: linear-gradient(135deg, #FDF4E3, #FDF8F0); border-left: 3px solid var(--gold); }
+  .tip-block { background: #F5F3FF; border-left: 3px solid #9B8AE0; font-size: 13px; color: #444; line-height: 1.6; padding: 14px 18px; border-radius: 10px; }
+  .warning-block { background: #FFF0F0; border-left: 3px solid var(--hard-red); font-size: 13px; color: #444; line-height: 1.6; padding: 14px 18px; border-radius: 10px; }
+  .block-title { font-size: 11px; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .fitness-block .block-title { color: #2D6B1A; }
+  .nut-block .block-title, .food-block .block-title { color: #8B6914; }
+  .block-text { font-size: 13px; color: #444; line-height: 1.65; }
+
+  /* MAP BUTTON */
+  .map-btn { display: flex; align-items: center; gap: 16px; background: var(--dark); color: var(--cream); border-radius: 12px; padding: 16px 22px; margin-bottom: 16px; text-decoration: none; transition: background 0.2s, transform 0.15s; cursor: pointer; }
+  .map-btn:hover { background: #2A2A4A; transform: translateY(-1px); }
+  .map-btn-icon { font-size: 26px; flex-shrink: 0; }
+  .map-btn-text { flex: 1; }
+  .map-btn-title { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; color: white; }
+  .map-btn-sub { font-size: 12px; color: var(--mist); margin-top: 3px; letter-spacing: 0.3px; }
+  .map-btn-arrow { font-size: 20px; color: var(--gold); flex-shrink: 0; }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* FACTS CARD */
+  .facts-card { background: white; border-radius: 14px; margin-bottom: 24px; overflow: hidden; box-shadow: 0 2px 16px rgba(0,0,0,0.07); border: 1px solid rgba(0,0,0,0.05); }
+  .facts-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 22px; cursor: pointer; font-size: 13px; font-weight: 700; color: var(--dolomite); letter-spacing: 0.3px; background: linear-gradient(135deg, #FDF8F0, #FDF4E3); }
+  .facts-header:hover { background: linear-gradient(135deg, #FAF3E8, #FAF0DE); }
+  .facts-chevron { font-size: 16px; color: var(--mist); transition: transform 0.3s; }
+  .facts-chevron.open { transform: rotate(180deg); }
+  .facts-body { display: none; padding: 22px 24px; border-top: 1px solid #f0ebe0; }
+  .facts-body.open { display: block; }
+  .facts-cols { display: flex; gap: 24px; flex-wrap: wrap; }
+  .facts-col { flex: 1; min-width: 260px; }
+  .facts-col-title { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--dolomite); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 2px solid #F0E8D8; }
+  .fact-item { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 14px; }
+  .fact-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .fact-item div { font-size: 13px; line-height: 1.6; color: #444; }
+  .fact-item strong { color: var(--dark); }
+  .facts-footer { margin-top: 16px; padding-top: 14px; border-top: 1px solid #f0ebe0; font-size: 13px; color: #555; line-height: 1.6; background: #FAFAF8; border-radius: 8px; padding: 12px 16px; }
+
+  /* STATS ROW */
+  .stats-row { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+  .stat-box { background: white; border-radius: 10px; padding: 14px 18px; flex: 1; min-width: 120px; border: 1px solid #e8e8e8; }
+  .stat-label { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--mist); margin-bottom: 4px; }
+  .stat-value { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; }
+  .stat-value.dolomite { color: var(--dolomite); }
+  .stat-value.croatia { color: var(--sea); }
+  .stat-sub { font-size: 11px; color: #888; margin-top: 2px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div>
+      <div class="trip-title">Dolomites<br>& Croatia</div>
+      <div class="trip-sub">June 19 – July 8 · Alta Via 1 + Sail Week + Dubrovnik</div>
+    </div>
+    <div class="badges">
+      <div class="badge badge-dolomite">⛰ Alta Via 1 · Jun 19–25</div>
+      <div class="badge badge-sea">⛵ Sail Week · Jun 27–Jul 4</div>
+    </div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab dolomite active" onclick="switchTab('dolomites', this)">⛰ Alta Via 1</div>
+  <div class="tab croatia" onclick="switchTab('croatia', this)">⛵ Sail Week</div>
+  <div class="tab dubrovnik" onclick="switchTab('dubrovnik', this)">🏰 Dubrovnik</div>
+</div>
+
+<!-- ===================== DOLOMITES ===================== -->
+<div id="dolomites" class="tab-panel active">
+<div class="content">
+  <div class="city-label">Part 1 · Italian Alps</div>
+  <div class="city-title">Alta Via 1 — Dolomites</div>
+  <div class="city-dates dolomite">June 18 (Toblach check-in) – June 25 (finish at Pissa) · 7-Day Trek</div>
+
+  <div class="city-intro">
+    Alta Via 1 is one of the great long-distance hikes in Europe. You walk hut-to-hut across the Dolomites — one of the most dramatic mountain ranges on earth, a UNESCO World Heritage site. No resupply needed between days; each rifugio (mountain hut) provides dinner, bed, and breakfast. <strong>Bring cash for huts — cards often not accepted.</strong> Total distance: ~120 km, ~18,000 ft cumulative elevation gain over 7 days.
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-box"><div class="stat-label">Total Days</div><div class="stat-value dolomite">7</div><div class="stat-sub">Hut to hut</div></div>
+    <div class="stat-box"><div class="stat-label">Hard Days</div><div class="stat-value dolomite">2</div><div class="stat-sub">Jun 20 + Jun 24</div></div>
+    <div class="stat-box"><div class="stat-label">Elevation</div><div class="stat-value dolomite">~18k</div><div class="stat-sub">ft cumulative gain</div></div>
+    <div class="stat-box"><div class="stat-label">Distance</div><div class="stat-value dolomite">~120</div><div class="stat-sub">km total</div></div>
+  </div>
+
+  <a class="map-btn" href="https://www.google.com/maps/dir/Dobbiaco+Italy/Rifugio+Peduru+Dolomites/Rifugio+Pomedes+Dolomites/Rifugio+Passo+Staulanza+Dolomites/Rifugio+Coldai+Dolomites/Rifugio+Vazzoler+Dolomites/Rifugio+Fontana+Frida+Dolomites/Belluno+Italy" target="_blank" rel="noopener">
+    <span class="map-btn-icon">🗺</span>
+    <div class="map-btn-text">
+      <div class="map-btn-title">View Trek on Google Maps</div>
+      <div class="map-btn-sub">All 7 rifugio stops · Toblach → Belluno</div>
+    </div>
+    <span class="map-btn-arrow">↗</span>
+  </a>
+
+  <div class="facts-card">
+    <div class="facts-header" onclick="toggleFacts(this)">
+      <span>📐 How big is this actually? Put it in perspective</span>
+      <span class="facts-chevron">▾</span>
+    </div>
+    <div class="facts-body">
+      <div class="facts-cols">
+        <div class="facts-col">
+          <div class="facts-col-title">📏 Distance — 120 km (74.6 miles)</div>
+          <div class="fact-item">
+            <span class="fact-icon">🏅</span>
+            <div><strong>~2.85 marathons back to back.</strong> A marathon is 26.2 miles. You're doing nearly 3 of them, except over mountains, with a 40L pack, gaining thousands of feet each day.</div>
+          </div>
+          <div class="fact-item">
+            <span class="fact-icon">🗽</span>
+            <div><strong>Manhattan to Philadelphia</strong> is about 95 miles. You're covering roughly 80% of that distance, entirely on foot, through the Alps.</div>
+          </div>
+          <div class="fact-item">
+            <span class="fact-icon">📅</span>
+            <div><strong>Daily average: 17.1 km / 10.7 miles.</strong> That's a 10-mile day, every single day, for a week — with thousands of feet of climbing on each one.</div>
+          </div>
+        </div>
+        <div class="facts-col">
+          <div class="facts-col-title">⛰ Elevation — ~18,000 ft (5,486 m) cumulative gain</div>
+          <div class="fact-item">
+            <span class="fact-icon">🏢</span>
+            <div><strong>3.4× the Empire State Building.</strong> The ESB is ~1,454 ft to the roof. You're climbing that height 3.4 times over the week — except it's mountain terrain, not an elevator.</div>
+          </div>
+          <div class="fact-item">
+            <span class="fact-icon">🏔</span>
+            <div><strong>About half the height of Everest.</strong> Everest's summit is 29,032 ft above sea level. Your cumulative gain is ~62% of that — stacked vertically, you'd be above the death zone.</div>
+          </div>
+          <div class="fact-item">
+            <span class="fact-icon">🪜</span>
+            <div><strong>~1,800 floors of stairs.</strong> At ~10 ft per floor, 18,000 ft = climbing a 1,800-floor skyscraper. The tallest building in the world (Burj Khalifa) has 163 floors. You're doing that 11 times.</div>
+          </div>
+          <div class="fact-item">
+            <span class="fact-icon">✈️</span>
+            <div><strong>Cruising altitude context:</strong> Commercial planes fly at ~35,000 ft. Your cumulative gain is more than half the distance from the ground to where the plane you took to Munich flew.</div>
+          </div>
+        </div>
+      </div>
+      <div class="facts-footer">
+        💡 And remember — every foot you gain, you also descend. Total elevation change (up + down) over 7 days is closer to <strong>36,000 ft</strong>. Your legs will feel every one of them.
+      </div>
+    </div>
+  </div>
+
+  <!-- Jun 18: Toblach -->
+  <div class="day-card">
+    <div class="day-header" onclick="toggleDay(this)">
+      <div class="day-num dolomite"><span class="dow">Wed</span><span class="date">18</span><span class="month">Jun</span></div>
+      <div class="day-meta">
+        <div class="day-name">Arrival — Toblach / Dobbiaco</div>
+        <div class="day-theme">Check in, gear check, early sleep</div>
+        <div class="day-tags"><span class="tag tag-easy">Rest Day</span></div>
+      </div>
+      <div class="chevron">▾</div>
+    </div>
+    <div class="day-body">
+      <div class="section">
+        <div class="sec-title">Schedule</div>
+        <div class="timeline">
+          <div class="tl-item"><span class="tl-time">Train</span><div class="tl-dot dolomite"></div><div class="tl-text">Innsbruck Hbf → Dobbiaco/Toblach (~2.5 hrs, Brenner Pass). Scenic, relaxing ride into Italy.</div></div>
+          <div class="tl-item"><span class="tl-time">4–6P</span><div class="tl-dot dolomite"></div><div class="tl-text"><strong>Check in at Youth Hostel Toblach</strong> (strict window: 4:00–6:00 PM). Don't miss it.</div></div>
+          <div class="tl-item"><span class="tl-time">Evening</span><div class="tl-dot dolomite"></div><div class="tl-text">Repack your backpack for the trail — only what you need for 7 days. Check boots, poles, waterproof, blister kit, headlamp. Charge everything.</div></div>
+          <div class="tl-item"><span class="tl-time">Dinner</span><div class="tl-dot dolomite"></div><div class="tl-text"><strong>Big carb + protein meal.</strong> Pasta if available. Drink 3–4L water today. Salt your food. Bed by 9PM.</div></div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="block fitness-block">
+          <div class="block-title">🏃 FITNESS — Complete Rest</div>
+          <div class="block-text">Zero running. Zero lifting. Every step you don't take today = energy on the trail tomorrow. This rest IS training.</div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="block nut-block">
+          <div class="block-title">🥩 NUTRITION — Pre-Hike Load</div>
+          <div class="block-text">Carb + protein double focus. 3–4L water. Salt food intentionally (electrolytes). Go to bed slightly full — you're burning 4,000+ cal/day starting tomorrow.</div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="block tip-block">
+          💡 <strong>Pack checklist:</strong> Hiking poles, waterproof jacket, warm mid-layer, blister kit, headlamp, sun cream, sunglasses, 2L water capacity, snack bars, cash (€), small first aid. <strong>No cotton.</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Jun 19: Day 1 -->
+  <div class="day-card">
+    <div class="day-header" onclick="toggleDay(this)">
+      <div class="day-num dolomite"><span class="dow">Thu</span><span class="date">19</span><span class="month">Jun</span></div>
+      <div class="day-meta">
+        <div class="day-name">Day 1 — Toblach to Peduru Rifugio</div>
+        <div class="day-theme">7 hrs · Moderate — first views of the Dolomites</div>
+        <div class="day-tags"><span class="tag tag-hike">Hike</span><span class="tag tag-moderate">Moderate · 7 hrs</span></div>
+      </div>
+      <div class="chevron">▾</div>
+    </div>
+    <div class="day-body">
+      <div class="section">
+        <div class="sec-title">Schedule</div>
+        <div class="timeline">
+          <div class="tl-item"><span class="tl-time">7:00A</span><div class="tl-dot dolomite"></div><div class="tl-text">Breakfast at hostel. Eat everything. Fill water. Start hiking by 7:30AM — early starts are critical on Alta Via 1 to avoid afternoon thunderstorms.</div></div>
+          <div class="tl-item"><span class="tl-time">7:30A</span><div class="tl-dot dolomite"></div><div class="tl-text">Trek begins. First views of the iconic Dolomite towers — jagged pink limestone spires unlike anything else in the Alps.</div></div>
+          <div class="tl-item"><span class="tl-time">~2:30P</span><div class="tl-dot dolomite"></div><div class="tl-text">Arrive <strong>Rifugio Peduru</strong>. Check in, shower, rest legs. Dinner included (half board).</div></div>
+          <div class="tl-item"><span class="tl-time">Evening</span><div class="tl-dot dolomite"></div><div class="tl-text">Eat well, hydrate, sleep early. The pattern for the next 6 days.</div></div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="block fitness-block">
+          <div class="block-title">🏃 FITNESS — Day 1 (Moderate)</div>
+          <div class="block-text">First day — pace yourself deliberately. Your body isn't calibrated to the terrain yet. Find a sustainable rhythm early and stick to it. Don't push the downhills; that's where knees blow up.</div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="block nut-block">
+          <div class="block-title">🥩 NUTRITION</div>
+          <div class="block-text">Rifugio half board = dinner + breakfast included. <strong>Eat everything served.</strong> Italian mountain hut food: pasta, polenta, grilled meat, soups. Supplement with your bars mid-hike. Protein powder in the evening if you feel under-fueled.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Jun 20: Day 2 HARD -->
+  <div class="day-card">
+    <div class="day-header" onclick="toggleDay(this)">
+      <div class="day-num warning"><span class="dow">Fri</span><span class="date">20</span><span class="month">Jun</span></div>
+      <div class="day-meta">
+        <div class="day-name">Day 2 — Peduru to Pomedes Rifugio</div>
+        <div class="day-theme">11 hrs · HARD — must arrive by 6:00 PM · No water on route</div>
+        <div class="day-tags">
+          <span class="tag tag-warning">⚠ Hard · 11 hrs</span>
+          <span class="tag tag-warning">No Water Source</span>
+        </div>
+      </div>
+      <div class="chevron">▾</div>
+    </div>
+    <div class="day-body">
+      <div class="section">
+        <div class="block warning-block">
+          ⚠️ <strong>Critical notes for this day:</strong> There is <strong>NO water source on the route</strong>. Fill every bottle and reservoir to capacity before leaving Peduru. Start no later than 6:30AM — 11 hours of hiking with a 6PM arrival deadline leaves zero buffer. This is the hardest day on the trail.
+        </div>
+      </div>
+      <div class="section">
+        <div class="sec-title">Schedule</div>
+        <div class="timeline">
+          <div class="tl-item"><span class="tl-time">6:00A</span><div class="tl-dot dolomite"></div><div class="tl-text">Wake. Eat full breakfast. <strong>Fill all water — every drop you'll carry.</strong> Minimum 3L per person.</div></div>
+          <div class="tl-item"><span class="tl-time">6:30A</span><div class="tl-dot dolomite"></div><div class="tl-text">Depart Peduru. Earliest possible start — this is non-negotiable.</div></div>
+          <div class="tl-item"><span class="tl-time">All day</span><div class="tl-dot dolomite"></div><div class="tl-text">Long, sustained effort across high terrain. Ration water carefully. Eat snacks every 90 mins without fail — don't wait until you're bonking.</div></div>
+          <div class="tl-item"><span class="tl-time">By 6:00P</span><div class="tl-dot dolomite"></div><div class="tl-text"><strong>Must arrive Rifugio Pomedes by 6PM</strong> — this is a hard cutoff. If you're behind schedule at the halfway point, increase pace.</div></div>
+          <div class="tl-item"><span class="tl-time">Evening</span><div class="tl-dot dolomite"></div><div class="tl-text">Eat everything at dinner. Protein powder before sleep. Feet up, legs elevated.</div></div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="block fitness-block">
+          <div class="block-title">🏃 FITNESS — Hardest Day on the Trail</div>
+          <div class="block-text">11 hours at altitude with no resupply. Break it mentally into thirds. Poles help enormously on ascents. Electrolytes are as important as calories today — salt tablets or electrolyte packets if you have them.</div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="block nut-block">
+          <div class="block-title">🥩 NUTRITION — Critical Day</div>
+          <div class="block-text"><strong>Eat on a schedule, not by hunger.</strong> Every 90 min: 200–300 cal (bars, nuts, dried fruit). Never let yourself get hungry — by the time you feel it, you're already behind. Front-load calories in the first half of the day.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Jun 21: Day 3 -->
+  <div class="day-card">
+    <div class="day-header" onclick="toggleDay(this)">
+      <div class="day-num dolomite"><span class="dow">Sat</span><span class="date">21</span><span class="month">Jun</span></div>
+      <div class="day-meta">
+        <div class="day-name">Day 3 — Pomedes to Passo Staulanza</div>
+        <div class="day-theme">8 hrs · Moderate — dramatic Civetta views</div>
+        <div class="day-tags"><span class="tag tag-hike">Hike</span><span class="tag tag-moderate">Moderate · 8 hrs</span></div>
+      </div>
+      <div class="chevron">▾</div>
+    </div>
+    <div class="day-body">
+      <div class="section">
+        <div class="sec-title">Schedule</div>
+        <div class="timeline">
+          <div class="tl-item"><span class="tl-time">7:00A</span><div class="tl-dot dolomite"></div><div class="tl-text">Breakfast at Pomedes. You survived Day 2 — this one is more manageable.</div></div>
+          <div class="tl-item"><span class="tl-time">7:30A</span><div class="tl-dot dolomite"></div><div class="tl-text">Depart. Today's route passes dramatic views of <strong>Monte Civetta</strong> — one of the Dolomites' most photographed walls. Take it in.</div></div>
+          <div class="tl-item"><span class="tl-time">~3:30P</span><div class="tl-dot dolomite"></div><div class="tl-text">Arrive <strong>Rifugio Passo Staulanza</strong>. Shower, dinner, sleep.</div></div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="block fitness-block">
+          <div class="block-title">🏃 FITNESS — Day 3 (Moderate)</div>
+          <div class="block-text">After yesterday's 11-hour effort, your body is adapting fast. Legs will be heavy in the morning but loosen up within the first hour. Keep the pace honest — you have 4 more days.</div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="block nut-block">
+          <div class="block-title">🥩 NUTRITION</div>
+          <div class="block-text">Recovery focus — eat the full rifugio dinner and breakfast. If the hut sells snacks, restock bars for the next day. Italian hut staples: pasta e fagioli (pasta and beans, ~30g protein), grilled chicken or sausage.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Jun 22: Day 4 RECOVERY -->
+  <div class="day-card">
+    <div class="day-header" onclick="toggleDay(this)">
+      <div class="day-num dolomite"><span class="dow">Sun</span><span class="date">22</span><span class="month">Jun</span></div>
+      <div class="day-meta">
+        <div class="day-name">Day 4 — Staulanza to Coldai Rifugio</div>
+        <div class="day-theme">2 hrs · Recovery day — Lago di Coldai views</div>
+        <div class="day-tags"><span class="tag tag-hike">Hike</span><span class="tag tag-easy">Easy · 2 hrs</span></div>
+      </div>
+      <div class="chevron">▾</div>
+    </div>
+    <div class="day-body">
+      <div class="section">
+        <div class="sec-title">Schedule</div>
+        <div class="timeline">
+          <div class="tl-item"><span class="tl-time">Morning</span><div class="tl-dot dolomite"></div><div class="tl-text">No rush today — 2-hour day. Eat a slow breakfast, enjoy the rifugio terrace, let the legs recover properly.</div></div>
+          <div class="tl-item"><span class="tl-time">10:00A</span><div class="tl-dot dolomite"></div><div class="tl-text">Depart for <strong>Rifugio Coldai</strong> — short, beautiful route past <strong>Lago di Coldai</strong>, a stunning alpine lake beneath the Civetta north face.</div></div>
+          <div class="tl-item"><span class="tl-time">~12:00P</span><div class="tl-dot dolomite"></div><div class="tl-text">Arrive Coldai. <strong>Rest for the afternoon.</strong> Swim in the lake if brave enough. Lie in the sun. Your legs need this.</div></div>
+          <div class="tl-item"><span class="tl-time">Afternoon</span><div class="tl-dot dolomite"></div><div class="tl-text">Extra food, extra sleep, feet elevated. Day 5 is 4 hrs — also manageable. Enjoy the downtime.</div></div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="block fitness-block">
+          <div class="block-title">🏃 FITNESS — Active Recovery</div>
+          <div class="block-text">2 hours of easy hiking. This is the planned rest day built into the route. <strong>Don't try to make it harder than it is.</strong> The recovery here directly powers Days 5 and 6.</div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="block nut-block">
+          <div class="block-title">🥩 NUTRITION</div>
+          <div class="block-text">Even on a short day, <strong>eat full meals.</strong> Your body is rebuilding overnight. If the hut has extra snacks or a proper lunch menu, order it. Protein + carbs — don't cut calories on recovery days.</div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="block tip-block">
+          💡 The Civetta north face visible from Coldai is one of the great walls of the Alps — 1,200m of sheer dolomite. Take time to actually sit and look at it.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Jun 23: Day 5 -->
+  <div class="day-card">
+    <div class="day-header" onclick="toggleDay(this)">
+      <div class="day-num dolomite"><span class="dow">Mon</span><span class="date">23</span><span class="month">Jun</span></div>
+      <div class="day-meta">
+        <div class="day-name">Day 5 — Coldai to Vazzoler Rifugio</div>
+        <div class="day-theme">4 hrs · Moderate — deep valley approach</div>
+        <div class="day-tags"><span class="tag tag-hike">Hike</span><span class="tag tag-moderate">Moderate · 4 hrs</span></div>
+      </div>
+      <div class="chevron">▾</div>
+    </div>
+    <div class="day-body">
+      <div class="section">
+        <div class="sec-title">Schedule</div>
+        <div class="timeline">
+          <div class="tl-item"><span class="tl-time">7:30A</span><div class="tl-dot dolomite"></div><div class="tl-text">Breakfast, depart by 8AM. Refreshed legs after yesterday's short day.</div></div>
+          <div class="tl-item"><span class="tl-time">~12:00P</span><div class="tl-dot dolomite"></div><div class="tl-text">Arrive <strong>Rifugio Vazzoler</strong> — surrounded by forest and towering Dolomite walls. One of the most atmospheric huts on the route.</div></div>
+          <div class="tl-item"><span class="tl-time">Afternoon</span><div class="tl-dot dolomite"></div><div class="tl-text">Long afternoon to rest. Explore around the hut, sit on the terrace. <strong>Tomorrow (Day 6) is the second hardest day — 10 hours.</strong> Eat big, sleep early.</div></div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="block fitness-block">
+          <div class="block-title">🏃 FITNESS — Day 5 (Short Day)</div>
+          <div class="block-text">Second short day of the trek. Use the afternoon to stretch, roll out legs if you have anything for that, and bank sleep. Tomorrow is a 10-hour day with a 6PM cutoff.</div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="block nut-block">
+          <div class="block-title">🥩 NUTRITION — Pre-load for Day 6</div>
+          <div class="block-text"><strong>Carb + protein load tonight.</strong> Eat the full rifugio dinner. If you can order extra, do it. Prep your snacks and pack tomorrow night so morning is fast. Protein shake before sleep if you have it.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Jun 24: Day 6 HARD -->
+  <div class="day-card">
+    <div class="day-header" onclick="toggleDay(this)">
+      <div class="day-num warning"><span class="dow">Tue</span><span class="date">24</span><span class="month">Jun</span></div>
+      <div class="day-meta">
+        <div class="day-name">Day 6 — Vazzoler to Fontana Rifugio</div>
+        <div class="day-theme">10 hrs · HARD — must arrive by 6:00 PM</div>
+        <div class="day-tags">
+          <span class="tag tag-warning">⚠ Hard · 10 hrs</span>
+          <span class="tag tag-warning">Arrive by 6PM</span>
+        </div>
+      </div>
+      <div class="chevron">▾</div>
+    </div>
+    <div class="day-body">
+      <div class="section">
+        <div class="block warning-block">
+          ⚠️ <strong>Must arrive Rifugio Fontana by 6:00 PM.</strong> Start no later than 6:30AM. Second hardest day on the route — 10 hours at altitude. Similar discipline to Day 2: early start, eat on schedule, ration water.
+        </div>
+      </div>
+      <div class="section">
+        <div class="sec-title">Schedule</div>
+        <div class="timeline">
+          <div class="tl-item"><span class="tl-time">6:00A</span><div class="tl-dot dolomite"></div><div class="tl-text">Wake. Full breakfast. Fill water. Pack done the night before.</div></div>
+          <div class="tl-item"><span class="tl-time">6:30A</span><div class="tl-dot dolomite"></div><div class="tl-text">Depart. Same discipline as Day 2 — early and steady.</div></div>
+          <div class="tl-item"><span class="tl-time">All day</span><div class="tl-dot dolomite"></div><div class="tl-text">Long sustained effort. Eat every 90 min. The scenery on this section is some of the best of the whole route — you're going through the heart of the Dolomites. Try to actually look up.</div></div>
+          <div class="tl-item"><span class="tl-time">By 6:00P</span><div class="tl-dot dolomite"></div><div class="tl-text"><strong>Arrive Rifugio Fontana.</strong> You've done the two hardest days. Tomorrow is the final day.</div></div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="block fitness-block">
+          <div class="block-title">🏃 FITNESS — Second Hardest Day</div>
+          <div class="block-text">You're 5 days in — legs are stronger than Day 1 but also more fatigued. Trust your conditioning. Poles are essential on the climbs. Don't bomb the descents — save the knees for tomorrow.</div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="block nut-block">
+          <div class="block-title">🥩 NUTRITION — Same as Day 2</div>
+          <div class="block-text">Eat on a timer. 200–300 cal every 90 min regardless of hunger. Full dinner tonight — you finish the trek tomorrow. Protein shake before sleep.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Jun 25: Day 7 FINISH -->
+  <div class="day-card">
+    <div class="day-header" onclick="toggleDay(this)">
+      <div class="day-num dolomite"><span class="dow">Wed</span><span class="date">25</span><span class="month">Jun</span></div>
+      <div class="day-meta">
+        <div class="day-name">Day 7 — Fontana to Pissa · FINISH</div>
+        <div class="day-theme">4 hrs · Easy — then Belluno → Venice · Anda Venice Hostel</div>
+        <div class="day-tags"><span class="tag tag-hike">Hike</span><span class="tag tag-easy">Easy · 4 hrs</span><span class="tag tag-culture">Venice Night</span></div>
+      </div>
+      <div class="chevron">▾</div>
+    </div>
+    <div class="day-body">
+      <div class="section">
+        <div class="sec-title">Schedule</div>
+        <div class="timeline">
+          <div class="tl-item"><span class="tl-time">7:00A</span><div class="tl-dot dolomite"></div><div class="tl-text">Final breakfast at Fontana. Last morning in the mountains — take it in.</div></div>
+          <div class="tl-item"><span class="tl-time">7:30A</span><div class="tl-dot dolomite"></div><div class="tl-text">Final 4-hour descent to <strong>Pissa</strong>. Easy terrain — the finish line is close.</div></div>
+          <div class="tl-item"><span class="tl-time">~11:30A</span><div class="tl-dot dolomite"></div><div class="tl-text"><strong>Finish Alta Via 1.</strong> You just completed one of the great Alpine treks.</div></div>
+          <div class="tl-item"><span class="tl-time">Midday</span><div class="tl-dot dolomite"></div><div class="tl-text">Bus from Pissa → <strong>Belluno</strong>. Train <strong>Belluno → Venice</strong>. Check in at <strong>Anda Venice Hostel</strong>.</div></div>
+          <div class="tl-item"><span class="tl-time">Evening</span><div class="tl-dot dolomite"></div><div class="tl-text">Real shower. Real food. Real bed. Eat a massive dinner — pasta, meat, everything. You've earned it many times over.</div></div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="block fitness-block">
+          <div class="block-title">🏃 FITNESS — Finish Line</div>
+          <div class="block-text">Easy final descent. No other workout today or tomorrow. You need full recovery before Sail Week. Venice tonight, Ancona tomorrow — your only job is rest and eating.</div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="block nut-block">
+          <div class="block-title">🥩 NUTRITION — Recovery Feast</div>
+          <div class="block-text">Eat everything tonight. Protein + carbs, no restrictions. Dinner in Venice — pasta, seafood, anything. You've been burning 4,000+ cal/day for a week. Refuel hard.</div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="block tip-block">
+          💡 <strong>Venice tip:</strong> You're staying at Anda Venice Hostel tonight. Even arriving tired from the trek, a slow evening walk along the canals is worth it — Venice at night with no crowds is a different city. Tomorrow morning you head to Ancona for the ferry.
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ===================== CROATIA SAIL WEEK ===================== -->
+<div id="croatia" class="tab-panel">
+<div class="content">
+  <div class="city-label">Part 2 · Adriatic Sea</div>
+  <div class="city-title">Croatia Sail Week</div>
+  <div class="city-dates croatia">June 26 (Ancona ferry) – July 4 · 7 Nights on a Catamaran</div>
+
+  <div class="city-intro">
+    Sail Week is 7 days on a catamaran sailing the Dalmatian coast — island hopping, swimming in blue-green coves, and anchoring in harbour towns each evening. Half board is included (breakfast + dinner on the boat). The skipper handles sailing; your job is to enjoy it. Costs beyond what's paid: <strong>~€150 skipper/host fee + ~€50 water taxis.</strong>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-box"><div class="stat-label">Duration</div><div class="stat-value croatia">7</div><div class="stat-sub">nights at sea</div></div>
+    <div class="stat-box"><div class="stat-label">Included</div><div class="stat-value croatia">½</div><div class="stat-sub">board (B + D)</div></div>
+    <div class="stat-box"><div class="stat-label">Extra Cost</div><div class="stat-value croatia">~€200</div><div class="stat-sub">tips + water taxis</div></div>
+    <div class="stat-box"><div class="stat-label">End Point</div><div class="stat-value croatia">DBV</div><div class="stat-sub">Dubrovnik</div></div>
+  </div>
+
+  <!-- Jun 26: Travel -->
+  <div class="day-card">
+    <div class="day-header" onclick="toggleDay(this)">
+      <div class="day-num croatia"><span class="dow">Thu</span><span class="date">26</span><span class="month">Jun</span></div>
+      <div class="day-meta">
+        <div class="day-name">Venice → Ancona → Overnight Ferry</div>
+        <div class="day-theme">Long transit day — then sleep on the Adriatic</div>
+        <div class="day-tags"><span class="tag tag-easy">Transit Day</span></div>
+      </div>
+      <div class="chevron">▾</div>
+    </div>
+    <div class="day-body">
+      <div class="section">
+        <div class="sec-title">Schedule</div>
+        <div class="timeline">
+          <div class="tl-item"><span class="tl-time">Morning</span><div class="tl-dot croatia"></div><div class="tl-text">Train from <strong>Venice Santa Lucia → Ancona</strong> (~3.5 hrs). Ancona is a port city on Italy's Adriatic coast.</div></div>
+          <div class="tl-item"><span class="tl-time">Afternoon</span><div class="tl-dot croatia"></div><div class="tl-text">Eat a big meal in Ancona before boarding. Last real Italian food for a week.</div></div>
+          <div class="tl-item"><span class="tl-time">Evening</span><div class="tl-dot croatia"></div><div class="tl-text">Board the <strong>overnight ferry Ancona → Split</strong>. ~10 hr crossing. Sleep on the ferry — cabin or reclining seat. Arrive Split early morning June 27.</div></div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="block fitness-block">
+          <div class="block-title">🏃 FITNESS — Rest Day</div>
+          <div class="block-text">Pure transit. You finished the Dolomites yesterday — your body needs passive rest. Walk around Ancona if you have time but nothing structured. Let the legs fully decompress before Sail Week.</div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="block nut-block">
+          <div class="block-title">🥩 NUTRITION</div>
+          <div class="block-text">Big lunch in Ancona — protein + carbs. Ferry food is typically poor. Bring snacks aboard. Keep protein powder handy — boat meals are often lower protein than you'd like.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Jun 27: Split + Catamaran -->
+  <div class="day-card">
+    <div class="day-header" onclick="toggleDay(this)">
+      <div class="day-num croatia"><span class="dow">Fri</span><span class="date">27</span><span class="month">Jun</span></div>
+      <div class="day-meta">
+        <div class="day-name">Split Arrival + Board the Catamaran</div>
+        <div class="day-theme">Sail Week begins — first island stop</div>
+        <div class="day-tags"><span class="tag tag-sail">Sail Week</span><span class="tag tag-culture">Split</span></div>
+      </div>
+      <div class="chevron">▾</div>
+    </div>
+    <div class="day-body">
+      <div class="section">
+        <div class="sec-title">Schedule</div>
+        <div class="timeline">
+          <div class="tl-item"><span class="tl-time">Morning</span><div class="tl-dot croatia"></div><div class="tl-text">Ferry docks in <strong>Split</strong>. Walk the old town briefly — Diocletian's Palace (a Roman Emperor's retirement palace turned living city) is worth an hour. It's literally people's apartments inside a 1,700-year-old palace complex.</div></div>
+          <div class="tl-item"><span class="tl-time">Midday</span><div class="tl-dot croatia"></div><div class="tl-text">Board the catamaran. Meet the skipper and host. Stow gear — space is tight, pack light.</div></div>
+          <div class="tl-item"><span class="tl-time">Afternoon</span><div class="tl-dot croatia"></div><div class="tl-text">Set sail. First afternoon on the Adriatic — <strong>swimming stops in coves</strong>, sun on deck, introductions with the crew.</div></div>
+          <div class="tl-item"><span class="tl-time">Evening</span><div class="tl-dot croatia"></div><div class="tl-text">Anchor in first harbour town. Dinner on the boat (half board). Walk the harbour. This is the rhythm every day.</div></div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="block fitness-block">
+          <div class="block-title">🏃 FITNESS — Sail Week Mode</div>
+          <div class="block-text">Sail Week is active but not structured — swimming, exploring, walking harbour towns. Your running schedule is on hold. <strong>Swimming laps alongside the boat or in coves</strong> is your best fitness option. Early morning swim before the group is up = free pool. Aim for 20–30 min of intentional swimming daily if you want to keep cardio moving.</div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="block food-block">
+          <div class="block-title">🍽 CROATIAN FOOD TO TRY</div>
+          <div class="block-text"><strong>Peka</strong> — meat or seafood slow-cooked under a cast iron lid buried in embers. Uniquely Dalmatian. <strong>Grilled fish</strong> (brancin / sea bass, orada / sea bream) is everywhere and high protein. <strong>Black risotto</strong> (made with cuttlefish ink) is a Croatian icon. <strong>Buzara</strong> — mussels or prawns in a garlic white wine sauce.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Jun 28 - Jul 3: Sail Days -->
+  <div class="day-card">
+    <div class="day-header" onclick="toggleDay(this)">
+      <div class="day-num croatia"><span class="dow">Sat–</span><span class="date">28</span><span class="month">Jun–Jul3</span></div>
+      <div class="day-meta">
+        <div class="day-name">Days at Sea — Island Hopping</div>
+        <div class="day-theme">Hvar · Korčula · Vis · Mljet · Brač · Šolta</div>
+        <div class="day-tags"><span class="tag tag-sail">Sailing</span><span class="tag tag-easy">Active Rest</span><span class="tag tag-food">Local Food</span></div>
+      </div>
+      <div class="chevron">▾</div>
+    </div>
+    <div class="day-body">
+      <div class="section">
+        <div class="sec-title">The Dalmatian Islands</div>
+        <div class="timeline">
+          <div class="tl-item"><span class="tl-time">Hvar</span><div class="tl-dot croatia"></div><div class="tl-text"><strong>Hvar Town</strong> — the most glamorous island on the Croatian coast. Lavender fields, Renaissance architecture, cliff bars. Walk up to the fortress (Fortica) for panoramic views. Nightlife here is legendary if that's your thing.</div></div>
+          <div class="tl-item"><span class="tl-time">Vis</span><div class="tl-dot croatia"></div><div class="tl-text"><strong>Vis Island</strong> — remote, protected, off the tourist trail. The <strong>Blue Cave (Modra Špilja)</strong> on Biševo island is one of the natural wonders of the Mediterranean — water taxi required (~€15). Book through the skipper.</div></div>
+          <div class="tl-item"><span class="tl-time">Korčula</span><div class="tl-dot croatia"></div><div class="tl-text"><strong>Korčula Town</strong> — a perfectly preserved medieval walled city on a small peninsula. Often called "Little Dubrovnik." Walk the walls and eat at a konoba (local tavern) in the old town.</div></div>
+          <div class="tl-item"><span class="tl-time">Mljet</span><div class="tl-dot croatia"></div><div class="tl-text"><strong>Mljet National Park</strong> — lush green island with two saltwater lakes in the interior. Rent bikes or kayaks. Swim in the lakes. One of the most peaceful spots on the whole coast.</div></div>
+          <div class="tl-item"><span class="tl-time">Brač</span><div class="tl-dot croatia"></div><div class="tl-text"><strong>Zlatni Rat beach</strong> — Croatia's most famous beach, a golden pebble spit that changes shape with the current. Worth the stop.</div></div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="block fitness-block">
+          <div class="block-title">🏃 FITNESS — Sail Week Routine</div>
+          <div class="block-text">Each morning before the group wakes: <strong>swim 20–30 min off the back of the boat</strong>. When anchored near beaches, run or walk the coastline. <strong>Kayaking or paddleboarding</strong> when available counts as upper body. You won't maintain full mileage but you'll stay active and give your body the recovery it earned from the Dolomites.</div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="block nut-block">
+          <div class="block-title">🥩 NUTRITION ON BOARD</div>
+          <div class="block-text">Half board = breakfast + dinner covered. <strong>Lunch is on you</strong> — usually at a harbour restaurant. Prioritize <strong>grilled fish</strong> at lunch (sea bass or bream, ~40g protein, low fat). Avoid fried calamari or burek (pastry) as your main. Protein powder in the morning if breakfast is light. Croatian fish is excellent and cheap on the islands — this is the easiest place to hit protein targets on the whole trip.</div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="block tip-block">
+          💡 <strong>Money:</strong> Croatia uses the Euro (€) since 2023. Card is accepted in towns; bring cash for water taxis and small konobas. <strong>Seasickness:</strong> If prone, take Dramamine the first night — open water can be rough. <strong>Water taxis:</strong> ~€50 total budgeted for side trips to caves, beaches, and transfers.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Jul 4: Disembark Dubrovnik -->
+  <div class="day-card">
+    <div class="day-header" onclick="toggleDay(this)">
+      <div class="day-num croatia"><span class="dow">Fri</span><span class="date">4</span><span class="month">Jul</span></div>
+      <div class="day-meta">
+        <div class="day-name">Disembark — Arrive Dubrovnik</div>
+        <div class="day-theme">Sail Week ends · City Walls first look</div>
+        <div class="day-tags"><span class="tag tag-culture">Dubrovnik</span><span class="tag tag-easy">Easy Day</span></div>
+      </div>
+      <div class="chevron">▾</div>
+    </div>
+    <div class="day-body">
+      <div class="section">
+        <div class="sec-title">Schedule</div>
+        <div class="timeline">
+          <div class="tl-item"><span class="tl-time">Morning</span><div class="tl-dot croatia"></div><div class="tl-text">Final morning on the catamaran. Disembark in <strong>Dubrovnik</strong>. Say goodbye to the crew — tip the skipper and host (included in your €150 budget).</div></div>
+          <div class="tl-item"><span class="tl-time">Midday</span><div class="tl-dot croatia"></div><div class="tl-text">Check in to accommodation. Shower. First real bed in a week.</div></div>
+          <div class="tl-item"><span class="tl-time">Afternoon</span><div class="tl-dot croatia"></div><div class="tl-text">First look at <strong>Dubrovnik's Old Town</strong> — walk down the <strong>Stradun</strong> (main limestone pedestrian street) and get your bearings. Jaw-dropping city.</div></div>
+          <div class="tl-item"><span class="tl-time">Evening</span><div class="tl-dot croatia"></div><div class="tl-text">Dinner in the Old Town. Splurge a little — you're in one of the most beautiful cities on earth. Try a <strong>seafood konoba</strong> near the fish market.</div></div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="block fitness-block">
+          <div class="block-title">🏃 FITNESS</div>
+          <div class="block-text">Easy day. Walking the Old Town is plenty — the cobblestones and hills add up. Save energy for the City Walls walk over the next few days.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ===================== DUBROVNIK ===================== -->
+<div id="dubrovnik" class="tab-panel">
+<div class="content">
+  <div class="city-label">Part 3 · Finale</div>
+  <div class="city-title">Dubrovnik</div>
+  <div class="city-dates dubrovnik">July 4 – July 8 · Fly home DBV 1:25 PM</div>
+
+  <div class="city-intro">
+    Dubrovnik is the finale — one of the best-preserved medieval cities in the world, perched on a limestone peninsula above the Adriatic. 4 days to explore, recover, and properly savour the end of the trip. The City Walls walk is the centrepiece. Game of Thrones fans: most of King's Landing was filmed here.
+  </div>
+
+  <!-- Jul 5 -->
+  <div class="day-card">
+    <div class="day-header" onclick="toggleDay(this)">
+      <div class="day-num dubrovnik"><span class="dow">Sat</span><span class="date">5</span><span class="month">Jul</span></div>
+      <div class="day-meta">
+        <div class="day-name">City Walls Walk + Old Town</div>
+        <div class="day-theme">The must-do Dubrovnik experience</div>
+        <div class="day-tags"><span class="tag tag-culture">Culture ⭐</span><span class="tag tag-moderate">Moderate</span></div>
+      </div>
+      <div class="chevron">▾</div>
+    </div>
+    <div class="day-body">
+      <div class="section">
+        <div class="sec-title">Schedule</div>
+        <div class="timeline">
+          <div class="tl-item"><span class="tl-time">7:30A</span><div class="tl-dot dubrovnik"></div><div class="tl-text"><strong>City Walls — go early.</strong> The walls open at 8AM and get extremely crowded by 10AM. At dawn they're quiet and the light is perfect. 2km circuit around the entire old city above the Adriatic. About 1.5 hrs. Entrance ~€35.</div></div>
+          <div class="tl-item"><span class="tl-time">10:00A</span><div class="tl-dot dubrovnik"></div><div class="tl-text">Breakfast on the Stradun. Croatian coffee culture is strong — sit and people watch.</div></div>
+          <div class="tl-item"><span class="tl-time">11:00A</span><div class="tl-dot dubrovnik"></div><div class="tl-text">Explore the <strong>Old Town</strong> on foot — Rector's Palace, Dominican Monastery, Sponza Palace. Wander the side streets off the Stradun — that's where it gets real.</div></div>
+          <div class="tl-item"><span class="tl-time">2:00P</span><div class="tl-dot dubrovnik"></div><div class="tl-text"><strong>Buža Bar</strong> — a bar cut into the cliff outside the city walls, literally hovering above the sea. Drinks and jumping off rocks into the Adriatic. One of the great spots in Croatia.</div></div>
+          <div class="tl-item"><span class="tl-time">Evening</span><div class="tl-dot dubrovnik"></div><div class="tl-text">Dinner: <strong>Proto Restaurant</strong> or any fresh seafood konoba near the fish market. Order whatever fish was caught today.</div></div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="block fitness-block">
+          <div class="block-title">🏃 FITNESS</div>
+          <div class="block-text">City Walls = 2km + significant stair climbing — surprisingly physical. After Sail Week recovery, this is a good gentle re-activation. If you want a run: the <strong>Lapad Peninsula coastal path</strong> is the best running route in Dubrovnik — flat, along the sea, 3–5 miles.</div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="block food-block">
+          <div class="block-title">🍽 FOOD TO TRY</div>
+          <div class="block-text"><strong>Fresh Adriatic fish</strong> — whatever is on the daily board (orada, brancin, skuša). <strong>Prstaci</strong> — date mussels, a Dubrovnik delicacy. <strong>Rozata</strong> — Dubrovnik's version of crème caramel, the local dessert you can only really get here.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Jul 6 -->
+  <div class="day-card">
+    <div class="day-header" onclick="toggleDay(this)">
+      <div class="day-num dubrovnik"><span class="dow">Sun</span><span class="date">6</span><span class="month">Jul</span></div>
+      <div class="day-meta">
+        <div class="day-name">Lokrum Island + Cable Car</div>
+        <div class="day-theme">Swim, explore, panoramic views</div>
+        <div class="day-tags"><span class="tag tag-culture">Nature</span><span class="tag tag-easy">Easy Day</span></div>
+      </div>
+      <div class="chevron">▾</div>
+    </div>
+    <div class="day-body">
+      <div class="section">
+        <div class="sec-title">Schedule</div>
+        <div class="timeline">
+          <div class="tl-item"><span class="tl-time">9:00A</span><div class="tl-dot dubrovnik"></div><div class="tl-text">Short ferry (10 min, ~€5) to <strong>Lokrum Island</strong> — a nature reserve just off the old city. Walk the botanical gardens, swim in the <strong>Dead Sea</strong> (a saltwater lake connected to the sea), explore the ruined Benedictine monastery and old fort.</div></div>
+          <div class="tl-item"><span class="tl-time">1:00P</span><div class="tl-dot dubrovnik"></div><div class="tl-text">Back in Dubrovnik. Lunch in the Old Town.</div></div>
+          <div class="tl-item"><span class="tl-time">3:00P</span><div class="tl-dot dubrovnik"></div><div class="tl-text"><strong>Dubrovnik Cable Car</strong> up to <strong>Mount Srđ</strong> (~€20 return). The view from 400m above: the entire walled city, the Elaphiti Islands, and the Adriatic stretching into the distance. Best view of the trip.</div></div>
+          <div class="tl-item"><span class="tl-time">Evening</span><div class="tl-dot dubrovnik"></div><div class="tl-text">Sunset drink at a cliff bar. Slow dinner. You're on trip time now.</div></div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="block fitness-block">
+          <div class="block-title">🏃 FITNESS</div>
+          <div class="block-text">Morning run option: <strong>Lapad Peninsula path</strong> before the Lokrum ferry. 3–4 easy miles while the city is quiet. Then Lokrum is a full day of swimming and walking — genuinely active without being a workout.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Jul 7 -->
+  <div class="day-card">
+    <div class="day-header" onclick="toggleDay(this)">
+      <div class="day-num dubrovnik"><span class="dow">Mon</span><span class="date">7</span><span class="month">Jul</span></div>
+      <div class="day-meta">
+        <div class="day-name">Last Full Day — Beach + Final Dinner</div>
+        <div class="day-theme">Slow morning, swim, farewell dinner</div>
+        <div class="day-tags"><span class="tag tag-easy">Rest</span><span class="tag tag-food">Final Dinner</span></div>
+      </div>
+      <div class="chevron">▾</div>
+    </div>
+    <div class="day-body">
+      <div class="section">
+        <div class="sec-title">Schedule</div>
+        <div class="timeline">
+          <div class="tl-item"><span class="tl-time">Morning</span><div class="tl-dot dubrovnik"></div><div class="tl-text">Sleep in. Slow breakfast. Pick up any last gifts — Croatian olive oil, local wine, Dubrovnik honey are the best brings-home.</div></div>
+          <div class="tl-item"><span class="tl-time">11:00A</span><div class="tl-dot dubrovnik"></div><div class="tl-text"><strong>Banje Beach</strong> (5 min walk from Old Town) or <strong>Šulić Beach</strong> (quieter, just below the walls). Swim in the clearest water of the trip. Last Adriatic dip.</div></div>
+          <div class="tl-item"><span class="tl-time">2:00P</span><div class="tl-dot dubrovnik"></div><div class="tl-text">Any last Old Town exploring. <strong>Franciscan Monastery</strong> has one of Europe's oldest pharmacies still operating, dating to 1317.</div></div>
+          <div class="tl-item"><span class="tl-time">7:30P</span><div class="tl-dot dubrovnik"></div><div class="tl-text"><strong>Final dinner.</strong> Go somewhere special — splurge on a full seafood spread. <strong>Restaurant 360°</strong> (on the city walls, literally) or <strong>Nautika</strong> (cliff-edge fine dining) if you want the full send. Otherwise any good konoba in the Old Town. Order the whole fish.</div></div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="block fitness-block">
+          <div class="block-title">🏃 FITNESS — Final Day</div>
+          <div class="block-text">Easy morning run if you want one — 3–4 miles on the Lapad path for old times' sake. Otherwise, rest completely. You fly tomorrow at 1:25PM and you've just done the Dolomites, a week at sea, and Dubrovnik. Take the W.</div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="block nut-block">
+          <div class="block-title">🥩 NUTRITION — Trip Finale</div>
+          <div class="block-text">No targets tonight. Order what you want. Eat what you want. You've been disciplined for 4 weeks — the final dinner is supposed to be a celebration, not a macro calculation.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Jul 8: Fly Home -->
+  <div class="day-card">
+    <div class="day-header" onclick="toggleDay(this)">
+      <div class="day-num dubrovnik"><span class="dow">Tue</span><span class="date">8</span><span class="month">Jul</span></div>
+      <div class="day-meta">
+        <div class="day-name">Fly Home — DBV → AMS → JFK</div>
+        <div class="day-theme">KLM 1:25 PM · 18,750 Points · 11h40m</div>
+        <div class="day-tags"><span class="tag tag-easy">Travel Day</span></div>
+      </div>
+      <div class="chevron">▾</div>
+    </div>
+    <div class="day-body">
+      <div class="section">
+        <div class="sec-title">Schedule</div>
+        <div class="timeline">
+          <div class="tl-item"><span class="tl-time">Morning</span><div class="tl-dot dubrovnik"></div><div class="tl-text">Check out. Head to <strong>Dubrovnik Airport (DBV)</strong> — 20–30 min from the Old Town by taxi or bus 11.</div></div>
+          <div class="tl-item"><span class="tl-time">1:25P</span><div class="tl-dot dubrovnik"></div><div class="tl-text">Depart <strong>DBV → Amsterdam (AMS)</strong>. Connection to <strong>JFK</strong>. Total travel time: 11h40m. Arrive New York 7:05PM.</div></div>
+          <div class="tl-item"><span class="tl-time">7:05P</span><div class="tl-dot dubrovnik"></div><div class="tl-text">Land JFK. Trip complete. June 10 to July 8 — 28 days, Austria, Italy, Croatia. Well done.</div></div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="block tip-block">
+          💡 <strong>Airport:</strong> Dubrovnik Airport is small — arrive 2 hours early minimum in peak summer. It gets extremely busy in July. Bus 11 from Pile Gate (Old Town entrance) runs directly to the airport.
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+  function switchTab(id, el) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    el.classList.add('active');
+  }
+  function toggleDay(header) {
+    const body = header.parentElement.querySelector('.day-body');
+    const chev = header.querySelector('.chevron');
+    body.classList.toggle('open');
+    chev.classList.toggle('open');
+  }
+  function toggleFacts(header) {
+    const body = header.parentElement.querySelector('.facts-body');
+    const chev = header.querySelector('.facts-chevron');
+    body.classList.toggle('open');
+    chev.classList.toggle('open');
+  }
+</script>
+</body>
+</html>
