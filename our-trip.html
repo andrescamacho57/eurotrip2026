@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Our Trip — Andres &amp; Mari</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,400..700,100;1,9..144,400..600,100&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --shell:#FDF8F1;
+  --shell-2:#F6EEE2;
+  --text:#2E3F47;
+  --soft:#5C7078;
+  --sea:#3B8B99;
+  --sea-pale:#DCEDEF;
+  --sun:#E0A03C;
+  --sun-pale:#FBEED8;
+  --line:rgba(46,63,71,.12);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  font-family:"Nunito Sans",system-ui,sans-serif;
+  background:var(--shell);
+  color:var(--text);
+  font-size:19px;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:620px;margin:0 auto;padding:0 24px}
+
+/* HERO */
+.top{
+  text-align:center;
+  padding:56px 0 44px;
+}
+.sun{
+  width:60px;height:60px;margin:0 auto 26px;
+  border-radius:50%;
+  background:radial-gradient(circle at 38% 34%,#F5C776,var(--sun) 62%,#C8862A);
+  box-shadow:0 0 0 12px rgba(224,160,60,.12),0 0 0 26px rgba(224,160,60,.06);
+}
+h1{
+  font-family:"Fraunces",Georgia,serif;
+  font-variation-settings:"SOFT" 100,"opsz" 120;
+  font-weight:600;
+  font-size:clamp(2.6rem,12vw,3.8rem);
+  line-height:1.02;
+  letter-spacing:-.02em;
+}
+h1 em{font-style:italic;font-weight:400;color:var(--sea)}
+.when{
+  font-size:1.05rem;color:var(--soft);
+  margin-top:16px;font-weight:600;
+}
+.intro{
+  font-family:"Fraunces",Georgia,serif;
+  font-variation-settings:"SOFT" 100;
+  font-size:1.25rem;line-height:1.5;
+  margin-top:30px;
+  padding-top:30px;
+  border-top:2px solid var(--sea-pale);
+}
+
+/* PLACES */
+.places{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:12px;margin:38px 0 10px;
+}
+.place{
+  background:#fff;border-radius:16px;
+  padding:18px 16px;text-align:center;
+  border:2px solid var(--sea-pale);
+}
+.place .flag{font-size:1.6rem;line-height:1;display:block;margin-bottom:8px}
+.place b{display:block;font-size:1.15rem;font-weight:700}
+.place span{font-size:.92rem;color:var(--soft)}
+
+/* SECTION HEADS */
+h2{
+  font-family:"Fraunces",Georgia,serif;
+  font-variation-settings:"SOFT" 100;
+  font-weight:600;font-size:1.9rem;
+  letter-spacing:-.015em;
+  margin:56px 0 8px;
+  text-align:center;
+}
+.sub{
+  text-align:center;color:var(--soft);
+  font-size:1rem;margin-bottom:32px;
+}
+
+/* DAY CARDS */
+.day{
+  background:#fff;
+  border-radius:20px;
+  padding:24px 22px;
+  margin-bottom:14px;
+  border:1px solid var(--line);
+  box-shadow:0 2px 3px rgba(46,63,71,.03),0 12px 28px -18px rgba(46,63,71,.22);
+}
+.day .icon{
+  font-size:2rem;line-height:1;
+  display:block;margin-bottom:12px;
+}
+.day .date{
+  font-size:.85rem;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;
+  color:var(--sea);margin-bottom:4px;
+}
+.day h3{
+  font-family:"Fraunces",Georgia,serif;
+  font-variation-settings:"SOFT" 100;
+  font-weight:600;font-size:1.5rem;
+  line-height:1.15;letter-spacing:-.015em;
+  margin-bottom:12px;
+}
+.day p{margin-bottom:11px;font-size:1.02rem}
+.day p:last-child{margin-bottom:0}
+.gentle{
+  background:var(--sea-pale);
+  border-radius:12px;
+  padding:13px 15px;
+  font-size:.97rem;
+  margin-top:14px;
+}
+.gentle b{color:#1F6570}
+.special{
+  background:var(--sun-pale);
+  border-radius:12px;
+  padding:13px 15px;
+  font-size:.97rem;
+  margin-top:14px;
+}
+.special b{color:#8A5E14}
+
+/* PROMISES */
+.promises{
+  background:var(--text);
+  color:var(--shell);
+  border-radius:24px;
+  padding:36px 26px;
+  margin-top:20px;
+}
+.promises h2{color:var(--shell);margin-top:0;font-size:1.7rem}
+.promises .sub{color:rgba(253,248,241,.62);margin-bottom:26px}
+.promises ul{list-style:none}
+.promises li{
+  padding:16px 0;
+  border-top:1px solid rgba(253,248,241,.16);
+  font-size:1.05rem;
+  line-height:1.5;
+}
+.promises li:first-child{border-top:none}
+.promises li b{
+  display:block;
+  font-family:"Fraunces",Georgia,serif;
+  font-variation-settings:"SOFT" 100;
+  font-size:1.15rem;font-weight:600;
+  margin-bottom:2px;color:#fff;
+}
+
+/* FAMILY */
+.family{
+  background:#fff;border:2px solid var(--sun-pale);
+  border-radius:20px;padding:28px 24px;margin-top:20px;
+}
+.family h2{margin-top:0;font-size:1.6rem}
+.family p{margin-bottom:14px}
+.family p:last-child{margin-bottom:0}
+
+.closing{
+  text-align:center;
+  font-family:"Fraunces",Georgia,serif;
+  font-variation-settings:"SOFT" 100;
+  font-style:italic;
+  font-size:1.35rem;line-height:1.45;
+  color:var(--sea);
+  margin:56px 0 20px;
+  padding:0 10px;
+}
+footer{
+  text-align:center;padding:20px 0 50px;
+  color:var(--soft);font-size:.9rem;
+}
+@media(max-width:400px){
+  body{font-size:18px}
+  .places{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top">
+    <div class="sun" aria-hidden="true"></div>
+    <h1>Our Trip<br><em>Greece &amp; Portugal</em></h1>
+    <p class="when">July 31 — August 15, 2026</p>
+    <p class="intro">Two weeks. Islands, warm water, family, and a wedding. Everything is planned slowly, with lots of time to rest.</p>
+  </div>
+
+  <div class="places">
+    <div class="place"><span class="flag">🇬🇷</span><b>Athens</b><span>2 nights</span></div>
+    <div class="place"><span class="flag">🏝️</span><b>Paros</b><span>5 nights</span></div>
+    <div class="place"><span class="flag">🇵🇹</span><b>Lisbon</b><span>4 nights</span></div>
+    <div class="place"><span class="flag">💒</span><b>Ericeira</b><span>3 nights</span></div>
+  </div>
+
+  <h2>Day by day</h2>
+  <p class="sub">One thing a day. Sometimes nothing at all.</p>
+
+  <div class="day">
+    <span class="icon">✈️</span>
+    <p class="date">Friday, July 31</p>
+    <h3>We fly to Greece</h3>
+    <p>Jacksonville, then Atlanta, then a night flight across the ocean.</p>
+    <div class="gentle"><b>Easy day.</b> Wheelchair through both airports, so no long walks. Sleep on the plane.</div>
+  </div>
+
+  <div class="day">
+    <span class="icon">🌿</span>
+    <p class="date">Saturday, August 1</p>
+    <h3>We land in Athens</h3>
+    <p>We arrive in the morning and go straight to the hotel to rest.</p>
+    <p>Later, if we feel like it, a slow walk in the garden next door.</p>
+    <div class="special"><b>Dinner on the roof.</b> You can see the Acropolis lit up from the table.</div>
+  </div>
+
+  <div class="day">
+    <span class="icon">🏛️</span>
+    <p class="date">Sunday, August 2</p>
+    <h3>The Acropolis</h3>
+    <p>A taxi takes us right to the gate. A little shuttle carries us up the hill. Then an elevator goes to the top.</p>
+    <p>No stairs, no climbing. Up there it is flat, and we walk together to the Parthenon and take our time.</p>
+    <p>After, the museum — cool and quiet inside.</p>
+    <div class="gentle"><b>Afternoon is for resting</b> in the air conditioning. We can go in the morning or at sunset, whichever feels better that day.</div>
+  </div>
+
+  <div class="day">
+    <span class="icon">🛫</span>
+    <p class="date">Monday, August 3</p>
+    <h3>We fly to Paros</h3>
+    <p>A short flight, only 45 minutes. Then our hotel, right on the beach.</p>
+    <p>In the evening, a walk around the little fishing port and dinner by the water.</p>
+  </div>
+
+  <div class="day">
+    <span class="icon">🏖️</span>
+    <p class="date">Tuesday, August 4</p>
+    <h3>Beach day</h3>
+    <p>Nothing planned at all. Pool, beach, a long breakfast.</p>
+    <div class="gentle"><b>This is a do-nothing day.</b> That is the whole plan.</div>
+  </div>
+
+  <div class="day">
+    <span class="icon">🚗</span>
+    <p class="date">Wednesday, August 5</p>
+    <h3>Driving around the island</h3>
+    <p>We have a car for the day and stop wherever we want.</p>
+    <p>A fishing village for coffee. A mountain town for lunch in the shade. A calm beach to swim. One more beach for sunset.</p>
+    <div class="gentle"><b>Short drives between each stop.</b> Every place has somewhere to sit and a bathroom close by.</div>
+  </div>
+
+  <div class="day">
+    <span class="icon">⛵️</span>
+    <p class="date">Thursday, August 6</p>
+    <h3>The boat day</h3>
+    <p>A big wooden boat, all day on the water.</p>
+    <p>We see blue lagoons, sea caves, and a small island with an ancient temple on it.</p>
+    <p>Four swimming stops. We go in together with your life jacket, and Andres stays right beside you.</p>
+    <p>Lunch on the boat, fresh fruit, and drinks.</p>
+    <div class="special"><b>They saved you a seat.</b> A couch in the middle of the boat with a good back, right next to the bathroom. Andres already asked them.</div>
+  </div>
+
+  <div class="day">
+    <span class="icon">☀️</span>
+    <p class="date">Friday, August 7</p>
+    <h3>Rest day</h3>
+    <p>The hotel, the beach, the little town. Maybe a sunset boat ride if you feel like it.</p>
+    <div class="gentle"><b>No pressure at all.</b> We decide in the morning.</div>
+  </div>
+
+  <div class="day">
+    <span class="icon">✈️</span>
+    <p class="date">Saturday, August 8</p>
+    <h3>We fly to Portugal</h3>
+    <p>A long travel day, so we take it slowly. Wheelchair in the airports.</p>
+    <p>We have a long stop in Athens with time for a real sit-down dinner.</p>
+    <div class="gentle"><b>We sleep in the next morning.</b> No alarm.</div>
+  </div>
+
+  <div class="day">
+    <span class="icon">🥐</span>
+    <p class="date">Sunday, August 9</p>
+    <h3>Belém, by the river</h3>
+    <p>Our hotel sits right on the water. Everything is flat and close by.</p>
+    <p>An old monastery, a modern museum, and the famous custard tarts — the real ones, from the bakery that invented them.</p>
+    <p>Dinner with family in the evening.</p>
+  </div>
+
+  <div class="day">
+    <span class="icon">🛥️</span>
+    <p class="date">Monday, August 10</p>
+    <h3>Boat day with the family</h3>
+    <p>Everyone comes. The boat leaves from the dock right outside our hotel, so there is no traveling to get there.</p>
+    <p>We go past the old tower, under the big red bridge, and out toward the statue on the hill.</p>
+    <div class="special"><b>Calm river water</b> and hopefully a sunset.</div>
+  </div>
+
+  <div class="day">
+    <span class="icon">🌊</span>
+    <p class="date">Tuesday, August 11</p>
+    <h3>An easy day in Lisbon</h3>
+    <p>The pool, the spa, the river. Nothing we have to do.</p>
+    <div class="gentle"><b>Saving our energy</b> for the wedding.</div>
+  </div>
+
+  <div class="day">
+    <span class="icon">🏡</span>
+    <p class="date">Wednesday, August 12</p>
+    <h3>To Ericeira — the wedding begins</h3>
+    <p>We drive out to the coast and move into a big house with the family. Five bedrooms, everyone together.</p>
+    <p>Dario's wedding starts.</p>
+  </div>
+
+  <div class="day">
+    <span class="icon">💒</span>
+    <p class="date">Thursday, August 13</p>
+    <h3>The wedding</h3>
+    <p>Long seafood lunches, sunsets over the ocean, and an afternoon at the family beach.</p>
+    <div class="gentle"><b>We rest in the room every afternoon.</b> Wedding days are long and loud, so we take breaks on purpose.</div>
+  </div>
+
+  <div class="day">
+    <span class="icon">🏊</span>
+    <p class="date">Friday, August 14</p>
+    <h3>Our last night</h3>
+    <p>We move to a hotel on the cliffs with pools looking out over the ocean.</p>
+    <div class="gentle"><b>An easy, quiet night</b> before the flight home.</div>
+  </div>
+
+  <div class="day">
+    <span class="icon">🏠</span>
+    <p class="date">Saturday, August 15</p>
+    <h3>Home</h3>
+    <p>Lisbon, then Paris, then Orlando.</p>
+    <div class="special"><b>Mom picks us up in Orlando</b> and drives us home to Jacksonville.</div>
+  </div>
+
+  <div class="promises">
+    <h2>Every single day</h2>
+    <p class="sub">The same, no matter where we are</p>
+    <ul>
+      <li><b>We never walk far</b>We go a little way, then we sit down. Taxis for anything longer.</li>
+      <li><b>A bathroom is always close</b>Every place we go was chosen with that in mind.</li>
+      <li><b>The middle of the day is for resting</b>August is hot. We go out early or in the evening, and rest with the air conditioning on in between.</li>
+      <li><b>Nothing bumpy</b>No fast boats, no rough rides. Calm water only.</li>
+      <li><b>Andres is never far away</b>Not once, the whole trip.</li>
+    </ul>
+  </div>
+
+  <div class="family">
+    <h2>For the family</h2>
+    <p>Every day on this trip has one thing on it at most, and several days have nothing at all. That is on purpose, not by accident.</p>
+    <p>If Mari needs to sit, stop, skip something, or go back to the room — that is the plan working, not the plan failing. Please don't wait to be asked.</p>
+    <p>The best things we do together are the slow ones: long lunches, the water, sunsets, sitting somewhere with a view. There is no schedule to keep up with.</p>
+  </div>
+
+  <p class="closing">Two weeks. Warm water, good food,<br>and no rushing anywhere.</p>
+
+  <footer>See you in Greece ☀️</footer>
+
+</div>
+</body>
+</html>
